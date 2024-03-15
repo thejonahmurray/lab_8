@@ -1,3 +1,7 @@
+//Jonah Murray
+//COP3502C
+//Lab assignment 8
+
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,9 +33,54 @@ size_t Size(void* ptr)
 
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
-void mergeSort(int pData[], int l, int r)
-{
+void mergeSort(int pData[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        //Sort first half
+        mergeSort(pData, l, m);
+        mergeSort(pData, m + 1, r);
+        int n1 = m - l + 1;
+        int n2 = r - m;
+
+        //Allocate functions
+        int *L = (int *)Alloc(n1 * sizeof(int));
+        int *R = (int *)Alloc(n2 * sizeof(int));
+
+        //Copy the data
+        for (int i = 0; i < n1; i++)
+            L[i] = pData[l + i];
+        for (int j = 0; j < n2; j++)
+            R[j] = pData[m + 1 + j];
+
+        //Merge arrays
+        int i = 0, j = 0, k = l;
+        while (i < n1 && j < n2) {
+            if (L[i] <= R[j]) {
+                pData[k] = L[i];
+                i++;
+            } else {
+                pData[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+        //Copy last elements
+        while (i < n1) {
+            pData[k] = L[i];
+            i++;
+            k++;
+        }
+        while (j < n2) {
+            pData[k] = R[j];
+            j++;
+            k++;
+        }
+        //Deallocate
+        DeAlloc(L);
+        DeAlloc(R);
+    }
 }
+
 
 // parses input file to an integer array
 int parseData(char *inputFileName, int **ppData)
